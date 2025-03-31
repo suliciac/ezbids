@@ -45,24 +45,6 @@
                 <el-button style="width: 250px" type="primary" @click="download(`ezBIDS_template.json`)"
                     >Download configuration/template</el-button
                 >
-                <p>Or send the dataset to other cloud resources.</p>
-                <p>
-                    <el-dropdown v-if="hasAuth">
-                        <el-button style="margin-right: 10px">
-                            Send to <b>Brainlife.io</b>&nbsp;
-                            <font-awesome-icon :icon="['fas', 'angle-down']" />
-                        </el-button>
-                        <template #dropdown>
-                            <el-dropdown-menu>
-                                <el-dropdown-item @click="sendBrainlife()">Send to brainlife</el-dropdown-item>
-                                <el-dropdown-item @click="sendBrainlife('DWI')"
-                                    >Send to brainlife and run DWI Pipeline</el-dropdown-item
-                                >
-                            </el-dropdown-menu>
-                        </template>
-                    </el-dropdown>
-                    <el-button @click="sendOpenneuro">Send to <b>OpenNeuro</b></el-button>
-                </p>
 
                 <p style="background-color: #0001; padding: 20px; padding-top: 10px">
                     If you have re-named the original DICOM patient names for your BIDS subject/session names, you can
@@ -254,33 +236,6 @@ export default defineComponent({
             link.download = name;
             link.click();
             URL.revokeObjectURL(link.href);
-        },
-
-        sendBrainlife(pipeline?: 'DWI') {
-            const pipelineString = pipeline ? `&pipeline=${pipeline}` : '';
-            window.open(
-                `https://brainlife.io/projects#ezbids=${this.session._id}${pipelineString}`,
-                `_brainlife.${this.session._id}`
-            );
-        },
-
-        async sendOpenneuro() {
-            try {
-                const res = await axios.get(`${this.config.apihost}/download/${this.session._id}/token`);
-                const shortLivedJWT = res.data;
-
-                const url = `${this.config.apihost}/download/${this.session._id}/bids/${this.ezbids.datasetDescription.Name}?token=${shortLivedJWT}`;
-
-                const fullurl = new URL(url, document.baseURI).href;
-                window.open('https://openneuro.org/import?url=' + encodeURI(fullurl));
-
-            } catch (e) {
-                console.error(e);
-                ElNotification({
-                    message: 'there was an error downloading the data',
-                    type: 'error',
-                });
-            }
         },
 
         isValid(cb: (err?: string) => void) {
