@@ -17,8 +17,6 @@ if [ -z "$SESSION" ]; then
             -X "POST" \
             -H "Content-Type: application/json" | jq -r '._id'
     )
-    # DEBUG line 
-    echo "DEBUG: Session ID is '$SESSION'"
 fi
 
 
