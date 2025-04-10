@@ -35,6 +35,7 @@ api/*.key
 api/ezbids.key
 api/*.js
 api/*.js.map
+handler/__pycache__
 
 # ssl certs we ignore the content of the folder but keep the folder around.
 nginx/ssl/*
